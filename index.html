@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previsão do Tempo</title>
+</head>
+<body>
+    <h1>Previsão do Tempo</h1>
+    <input type="text" id="city" placeholder="Digite a cidade">
+    <button onclick="getWeather()">Buscar</button>
+    <div id="weatherResult"></div>
+
+    <script>
+        async function getWeather() {
+            const city = document.getElementById('city').value;
+            const apiKey = 'SUA_CHAVE_API';
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Cidade não encontrada');
+                const data = await response.json();
+                displayWeather(data);
+            } catch (error) {
+                document.getElementById('weatherResult').innerText = error.message;
+            }
+        }
+
+        function displayWeather(data) {
+            const result = `
+                <h2>${data.name}</h2>
+                <p>Temperatura: ${data.main.temp} °C</p>
+                <p>Condições: ${data.weather[0].description}</p>
+                <img src="http://openweathermap.org/img/wn/${data.weather[0].icon}.png" alt="${data.weather[0].description}">
+            `;
+            document.getElementById('weatherResult').innerHTML = result;
+        }
+    </script>
+</body>
+</html>
